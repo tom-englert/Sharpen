@@ -5,12 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:vsp="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
-             xmlns:converters="clr-namespace:Sharpen.VisualStudioExtension.Converters"
+             xmlns:local="clr-namespace:Sharpen.VisualStudioExtension.ToolWindows.AnalysisResultTreeViewItems"
              mc:Ignorable="d"
              x:ClassModifier="internal">
-    <UserControl.Resources>
-        <converters:NullToCollapsedConverter x:Key="NullToCollapsedConverter"/>
-    </UserControl.Resources>
     <xctk:BusyIndicator IsBusy="{Binding AnalysisIsRunning}"
                         DisplayAfter="00:00:01.00"
                         BusyContent="Analyzing code. Please wait..."
@@ -67,28 +64,35 @@
                 </TreeView.ItemContainerStyle>
 
                 <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                    <HierarchicalDataTemplate DataType="local:BaseTreeViewItem" 
+                                              ItemsSource="{Binding Children}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding Text}"  />
-                            <Decorator Width="4" />
-                            <TextBlock Text="{Binding NumberOfItems}" 
-                                       Visibility="{Binding NumberOfItems, Converter={StaticResource NullToCollapsedConverter}}"
-                                       FontStyle="Italic"/>
-                            <Decorator Width="4" />
+                            <TextBlock x:Name="NumberOfItems"
+                                       Text="{Binding NumberOfItems, StringFormat=' {0}'}"
+                                       FontStyle="Italic">
+                            </TextBlock>
                             <TextBlock x:Name="LearnMore"
                                        Visibility="Collapsed">
+                                <Run Text=" " />
                                 <Hyperlink NavigateUri="{Binding LearnMoreUrl}" 
-                                           RequestNavigate="OnLearnMoreRequestNavigate"
-                                           Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type TreeViewItem}}, Path=Foreground}"
-                                           Focusable="False">
-                                    <Run Text="{Binding LearnMoreDisplayText, Mode=OneWay}" />
-                                </Hyperlink>
+                                             RequestNavigate="OnLearnMoreRequestNavigate"
+                                             Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type TreeViewItem}}, Path=Foreground}"
+                                             Focusable="False">
+                                      <Run Text="{Binding LearnMoreDisplayText, Mode=OneWay}" />
+                                  </Hyperlink>
                             </TextBlock>
                           </StackPanel>
                         <HierarchicalDataTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="LearnMore" Property="Visibility" Value="{Binding LearnMoreUrl, Converter={StaticResource NullToCollapsedConverter}}"/>
+                                <Setter TargetName="LearnMore" Property="Visibility" Value="Visible"/>
                             </Trigger>
+                            <DataTrigger Binding="{Binding LearnMoreUrl}" Value="{x:Null}">
+                              <Setter TargetName="LearnMore" Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding NumberOfItems}" Value="{x:Null}">
+                              <Setter TargetName="NumberOfItems" Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
                         </HierarchicalDataTemplate.Triggers>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
