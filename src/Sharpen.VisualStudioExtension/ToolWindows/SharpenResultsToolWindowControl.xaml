@@ -11,17 +11,7 @@
     <UserControl.Resources>
         <converters:NullToCollapsedConverter x:Key="NullToCollapsedConverter"/>
     </UserControl.Resources>
-    <!--
-        If the WpfToolkit is not used in the code, the compiler will ignore the references
-        and an exception will be thrown at runtime with the message:
-        "Could not load file or assembly 'Xceed.Wpf.Toolkit, PublicKeyToken=...' or one of its dependencies. [...]"
-        To force the referencing of the assembly, we add a dummy name here which creates a field in the code behind.
-        This workaround has been taken from the following answer on StackOverflow:
-            https://stackoverflow.com/a/41605335/7025570
-    -->
-    <!-- ReSharper disable once UnusedMember.Global -->
-    <xctk:BusyIndicator x:Name="DummyNameToGetAReferenceInTheCodeBehind"
-                        IsBusy="{Binding AnalysisIsRunning}"
+    <xctk:BusyIndicator IsBusy="{Binding AnalysisIsRunning}"
                         DisplayAfter="00:00:01.00"
                         BusyContent="Analyzing code. Please wait..."
                         Foreground="{DynamicResource VsBrush.WindowText}"
@@ -80,13 +70,13 @@
                     <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding Text}"  />
+                            <Decorator Width="4" />
                             <TextBlock Text="{Binding NumberOfItems}" 
                                        Visibility="{Binding NumberOfItems, Converter={StaticResource NullToCollapsedConverter}}"
-                                       FontStyle="Italic"
-                                       Padding="4,0,0,0"/>
+                                       FontStyle="Italic"/>
+                            <Decorator Width="4" />
                             <TextBlock x:Name="LearnMore"
-                                       Visibility="Collapsed"
-                                       Padding="4,0,0,0" >
+                                       Visibility="Collapsed">
                                 <Hyperlink NavigateUri="{Binding LearnMoreUrl}" 
                                            RequestNavigate="OnLearnMoreRequestNavigate"
                                            Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type TreeViewItem}}, Path=Foreground}"

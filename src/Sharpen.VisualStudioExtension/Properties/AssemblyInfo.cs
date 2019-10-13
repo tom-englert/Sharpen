@@ -1,4 +1,8 @@
-﻿// ReSharper disable CheckNamespace
+﻿using Microsoft.VisualStudio.Shell;
+
+[assembly: ProvideCodeBase(CodeBase = @"$PackageFolder$\Xceed.Wpf.Toolkit.dll")]
+
+// ReSharper disable CheckNamespace
 internal static partial class AssemblyDescription
 {
     public const string Title = "Sharpen for Visual Studio";
